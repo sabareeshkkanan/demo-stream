@@ -1,48 +1,45 @@
 package com.guidedchoice.demostream.processor;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.StreamListener;
-import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.cloud.stream.messaging.Processor;
+import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Flux;
+
+import java.util.function.Function;
 
 @Service
-@EnableBinding(EvenOddProcessor.class)
+@EnableBinding(Processor.class)
 public class FindEvenOrOD {
 
-    @Autowired
+/*    @Autowired
     private EvenOddProcessor processor;
 
     @StreamListener(value = EvenOddProcessor.INPUT)
     public void processEven(Integer r) {
-        Message<Integer> message = MessageBuilder
 
-                .withPayload(r)
-                .setHeader("type", findType(r))
-                .setHeader(KafkaHeaders.MESSAGE_KEY, findType(r).getBytes())
-                .build();
+        String type;
+
+        Message<Integer> message = buildMessage(r, type);
         this.processor.output().send(message);
-    }
+    }*/
 
-
-    @StreamListener(value = EvenOddProcessor.INPUT1)
-    public void process(Integer r) {
-        Message<Integer> message = MessageBuilder
+    private Message<Integer> buildMessage(Integer r, String type) {
+        return MessageBuilder
 
                 .withPayload(r)
-                .setHeader("type", findType(r))
-                .setHeader(KafkaHeaders.MESSAGE_KEY, findType(r).getBytes())
+                .setHeader("type", type)
                 .build();
-        processor.output().send(message);
-        processor.output1().send(message);
     }
 
 
-    private String findType(int r) {
-        if (r % 2 == 0)
-            return "even";
-        return "odd";
+    @Bean
+    public Function<Flux<Message<Integer>>, Flux<Message<Integer>>> processType() {
+        return flux -> flux.map(message -> message.getPayload())
+                .map(integer -> integer % 2 == 0 ?
+                        buildMessage(integer, "even")
+                        : buildMessage(integer, "odd"));
     }
 }

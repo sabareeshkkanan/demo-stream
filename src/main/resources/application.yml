@@ -1,6 +1,7 @@
 spring.kafka:
   bootstrap-servers: kafka1:9093,kafka2:9094
 spring.cloud.stream:
+  function.definition: processType
   bindingRetryInterval: 1000
   defaultBinder: kafka
   kafka.binder:
@@ -20,12 +21,12 @@ spring.cloud.stream:
   bindings:
     output:
       binder: kafka
-      destination: demo_output
+      destination: reactive-out
     input:
       binder: kafka
-      destination: demo_printer
+      destination: reactive-in
     processor-out:
-      destination: demo_printer
-      group: shiv
+      destination: reactive-in
+
     processor-in:
-      destination: demo_output
+      destination: reactive-out

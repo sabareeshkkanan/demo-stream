@@ -1,39 +1,37 @@
 package com.guidedchoice.demostream.publisher;
 
+import com.guidedchoice.demostream.processor.EvenOddProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Source;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
 
+import static javax.management.timer.Timer.ONE_SECOND;
+
 @Service
-@EnableBinding(Source.class)
+@EnableBinding(EvenOddProcessor.class)
 public class PublishData {
 
     private Random random = new Random(10000);
 
     @Autowired
-    private Source source;
+    private EvenOddProcessor source;
 
-    //  @Scheduled(fixedRate = ONE_SECOND)
+    @Scheduled(fixedRate = ONE_SECOND)
     public void send() {
-        int r = random.nextInt(1000);
+        Integer r = random.nextInt(1000);
 
         Message<Integer> message = MessageBuilder
 
                 .withPayload(r)
-                .setHeader(KafkaHeaders.MESSAGE_KEY, findType(r).getBytes())
+
                 .build();
         this.source.output().send(message);
     }
 
-    private String findType(int r) {
-        if (r % 2 == 0)
-            return "even";
-        return "odd";
-    }
+
 }

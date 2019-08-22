@@ -1,5 +1,5 @@
 plugins {
-	id 'org.springframework.boot' version '2.1.6.RELEASE'
+	id 'org.springframework.boot' version '2.1.7.RELEASE'
 	id 'java'
 }
 
@@ -7,19 +7,19 @@ apply plugin: 'io.spring.dependency-management'
 
 group = 'com.guidedchoice'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+sourceCompatibility = '1.11'
 
 repositories {
 	mavenCentral()
 }
 ext {
-	springCloudVersion = 'Greenwich.SR1'
+	springCloudVersion = 'Greenwich.SR2'
 }
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter'
-
-	compile('org.springframework.cloud:spring-cloud-starter-stream-kafka')
+	compile('org.springframework.cloud:spring-cloud-stream-binder-kafka')
+	implementation 'org.springframework.cloud:spring-cloud-function-context'
 	compile('org.springframework.cloud:spring-cloud-stream-binder-kafka-streams')
 }
 dependencyManagement {
