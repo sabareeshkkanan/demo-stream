@@ -1,36 +1,33 @@
 package com.guidedchoice.demostream.publisher;
 
-import com.guidedchoice.demostream.processor.EvenOddProcessor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.stream.annotation.EnableBinding;
+import org.springframework.context.annotation.Bean;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.Random;
-
-import static javax.management.timer.Timer.ONE_SECOND;
+import java.util.function.Supplier;
 
 @Service
-@EnableBinding(EvenOddProcessor.class)
 public class PublishData {
 
     private Random random = new Random(10000);
 
-    @Autowired
-    private EvenOddProcessor source;
 
-    @Scheduled(fixedRate = ONE_SECOND)
-    public void send() {
-        Integer r = random.nextInt(1000);
+    @Bean
+    public Supplier<Message<Integer>> send() {
 
-        Message<Integer> message = MessageBuilder
+        return () -> {
+            Integer r = random.nextInt(1000);
 
-                .withPayload(r)
+            Message<Integer> message = MessageBuilder
 
-                .build();
-        this.source.output().send(message);
+                    .withPayload(r)
+
+                    .build();
+            return message;
+        };
+
     }
 
 

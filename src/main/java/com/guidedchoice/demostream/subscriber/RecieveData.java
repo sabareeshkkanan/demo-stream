@@ -1,22 +1,22 @@
 package com.guidedchoice.demostream.subscriber;
 
-import com.guidedchoice.demostream.processor.EvenOddProcessor;
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.annotation.StreamListener;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 
+import java.util.function.Consumer;
+
 @Service
-@EnableBinding(EvenOddProcessor.class)
 public class RecieveData {
 
-    @StreamListener(value = EvenOddProcessor.INPUT, condition = "headers['type']=='odd'")
-    public void process(Integer number) {
-        System.out.println("This is odd " + number);
+    @Bean
+    public Consumer<Integer> odd() {
+        return (number) -> System.out.println("This is odd " + number);
     }
 
-    @StreamListener(value = EvenOddProcessor.INPUT, condition = "headers['type']=='even'")
-    public void processEven(Integer number) {
-        System.out.println("This is even " + number);
+    @Bean
+    public Consumer<Integer> even() {
+
+        return (number) -> System.out.println("This is even " + number);
     }
 
 

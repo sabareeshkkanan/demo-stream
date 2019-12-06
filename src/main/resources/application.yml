@@ -1,7 +1,9 @@
 spring.kafka:
   bootstrap-servers: kafka1:9093,kafka2:9094
 spring.cloud.stream:
-  function.definition: processType
+  function:
+    definition: processType;odd;even;send
+
   bindingRetryInterval: 1000
   defaultBinder: kafka
   kafka.binder:
@@ -14,19 +16,21 @@ spring.cloud.stream:
     brokers:  kafka1:9093,kafka2:9094
     zkNodes:  kafka1
     configuration:
-      commit.interval.ms: 1000
+      commit.interval.ms: 10
       default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
       default.value.serde: org.springframework.kafka.support.serializer.JsonSerde
 
-  bindings:
-    output:
-      binder: kafka
-      destination: reactive-out
-    input:
-      binder: kafka
-      destination: reactive-in
-    processor-out:
-      destination: reactive-in
 
-    processor-in:
-      destination: reactive-out
+  bindings:
+    processType-in-0:
+      destination: send-out-0
+    even-in-0:
+      destination: processType-out-0
+    odd-in-0:
+      destination: processType-out-0
+
+spring.cloud.function:
+  routing.enabled: true
+  routing-expression:
+    even-in-0: headers['type']
+    odd-in-0:  headers['type']

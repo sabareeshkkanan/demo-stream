@@ -1,17 +1,14 @@
 package com.guidedchoice.demostream.processor;
 
-import org.springframework.cloud.stream.annotation.EnableBinding;
-import org.springframework.cloud.stream.messaging.Processor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.support.MessageBuilder;
-import org.springframework.stereotype.Service;
 import reactor.core.publisher.Flux;
 
 import java.util.function.Function;
 
-@Service
-@EnableBinding(Processor.class)
+@Configuration
 public class FindEvenOrOD {
 
 /*    @Autowired
@@ -42,4 +39,9 @@ public class FindEvenOrOD {
                         buildMessage(integer, "even")
                         : buildMessage(integer, "odd"));
     }
+
+/*    @Bean
+    public Function<Flux<String>,Flux<String>> toUpperCase(){
+        return stringFlux -> stringFlux.map(data->data.toUpperCase());
+    }*/
 }
